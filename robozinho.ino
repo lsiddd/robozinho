@@ -1,4 +1,4 @@
-/* RELÂMPAGO MARQUINHOS VERSÃO 0.0.1
+/* LIGHTNING LITTLE MARK VERSÃO 0.0.1
    AUTOR: LUCAS DE SOUSA PACHECO
    MODIFICADO EM: 02/07/2017
 */
@@ -70,7 +70,7 @@ void andaTras (int pwd) {
   digitalWrite (m2Pin1, LOW);
 }
 
-void giraHorario (bool sentido) {
+void gira (bool sentido) {
   //0 - horário
   //1 - anti-horário
   if (sentido) {
@@ -86,6 +86,7 @@ void giraHorario (bool sentido) {
   digitalWrite (m2Pin1, LOW);
 }
 
+/*--- FUNÇÕES DO ARDUINO ---*/
 void setup () {
   //inicialização dos pinos
   pinMode (hcTrigg, OUTPUT);
@@ -106,5 +107,10 @@ void loop () {
 
   if (millis() - lastHC >= hcTime)
     procuraInimigos ();
+
+  if (linha || inimigo)
+    andaFrente (255);
+  else
+    gira (true);
 }
 
