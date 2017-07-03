@@ -3,7 +3,8 @@
    MODIFICADO EM: 02/07/2017
 */
 
-#define slinha 3 // pino analógico
+#define slinha1 3 // pino analógico
+#define slinha2 3 //pino analógico
 #define hcTrigg 7 // trigger do sensor ultrassônico
 #define hcEcho 8 // echo do sensor ultrassônico
 
@@ -19,9 +20,11 @@ int hcTime = 100; //milissegundos
 
 /*-- VARIÁVEIS DE CONTROLE --*/
 bool inimigo = 0;
-bool linha = 0;
+bool linhaFrente = 0;
+bool linhaTras = 0;
 int linhaCalibre = 0;
-int val = 0;
+int val1 = 0;
+int val2 = 0;
 // CONTROLE DO TEMPO
 unsigned long lastSLinha = 0;
 unsigned long currentLinha = 0;
@@ -48,13 +51,19 @@ void procuraInimigos () {
 }
 
 void procuraLinha () {
-  val = analogRead (slinha);
+  val1 = analogRead (slinha1);
+  val2 = analogRead (slinha2);
 
-  if (val - linhaCalibre > 10) { //determinhar treshold ainda
-    linha = 1;
+  if (val1 - linhaCalibre > 10) { //determinhar treshold ainda
+    linhaFrente = 1;
     return;
   }
-  linha = 0;
+  if (val2 - linhaCalibre > 10) { //determinhar treshold ainda
+    linhaTras= 1;
+    return;
+  }
+  linhaFrente = 0;
+  linhaTras = 0;
 }
 
 /*--- FUNÇÕES DE MOVIMENTO ---*/
@@ -98,7 +107,7 @@ void setup () {
   pinMode (m2Pin1, OUTPUT);
   pinMode (m2Pin2, OUTPUT);
 
-  linhaCalibre = analogRead (slinha);
+  linhaCalibre = analogRead (slinha1);
   //espera inicial
   delay (5000);
 }
@@ -116,8 +125,12 @@ void loop () {
     lastHC = currentHC;
   }
 
-  if (linha || inimigo)
+  if (inimigo)
     andaFrente (255);
+  else if (linhaFrente)
+    andaTras (255);
+  else if (linhaTras)
+    andaFrente(255);
   else
     gira (true);
 }
