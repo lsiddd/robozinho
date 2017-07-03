@@ -1,5 +1,5 @@
 /* LIGHTNING LITTLE MARK VERSÃO 0.0.1
-   AUTOR: LUCAS DE SOUSA PACHECO
+   AUTOR: LUCAS DE SOUSA PACHECO <LUCASSIDPACHECO@GMAIL.COM>
    MODIFICADO EM: 02/07/2017
 */
 
@@ -24,7 +24,9 @@ int linhaCalibre = 0;
 int val = 0;
 // CONTROLE DO TEMPO
 unsigned long lastSLinha = 0;
+unsigned long currentLinha = 0;
 unsigned long lastHC = 0;
+unsigned long currentHC = 0;
 long duration, distance;
 
 /*-- FUNÇÕES DE STATUS --*/
@@ -102,11 +104,17 @@ void setup () {
 }
 
 void loop () {
-  if (millis() - lastSLinha >= slTime)
+  currentLinha = millis ();
+  if (currentLinha - lastSLinha >= slTime){
     procuraLinha ();
+    lastSLinha = currentLinha;
+  }
 
-  if (millis() - lastHC >= hcTime)
+  currentHC = millis ();
+  if (currentHC - lastHC >= hcTime){
     procuraInimigos ();
+    lastHC = currentHC;
+  }
 
   if (linha || inimigo)
     andaFrente (255);
