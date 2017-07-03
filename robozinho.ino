@@ -4,7 +4,7 @@
 */
 
 #define slinha1 3 // pino analógico
-#define slinha2 3 //pino analógico
+#define slinha2 4 //pino analógico
 #define hcTrigg 7 // trigger do sensor ultrassônico
 #define hcEcho 8 // echo do sensor ultrassônico
 
@@ -59,7 +59,7 @@ void procuraLinha () {
     return;
   }
   if (val2 - linhaCalibre > 10) { //determinhar treshold ainda
-    linhaTras= 1;
+    linhaTras = 1;
     return;
   }
   linhaFrente = 0;
@@ -114,13 +114,13 @@ void setup () {
 
 void loop () {
   currentLinha = millis ();
-  if (currentLinha - lastSLinha >= slTime){
+  if (currentLinha - lastSLinha >= slTime) {
     procuraLinha ();
     lastSLinha = currentLinha;
   }
 
   currentHC = millis ();
-  if (currentHC - lastHC >= hcTime){
+  if (currentHC - lastHC >= hcTime) {
     procuraInimigos ();
     lastHC = currentHC;
   }
