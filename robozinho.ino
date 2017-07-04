@@ -1,6 +1,6 @@
 /* LIGHTNING LITTLE MARK VERSÃO 0.0.1
    AUTOR: LUCAS DE SOUSA PACHECO <LUCASSIDPACHECO@GMAIL.COM>
-   MODIFICADO EM: 02/07/2017
+   MODIFICADO EM: 04/07/2017
 */
 
 #define slinha1 3 // pino analógico
@@ -45,9 +45,11 @@ void procuraInimigos () {
   //converte a distância para cm
   distance = (duration / 2) / 29.1;
 
-  if (distance < 30)
+  if (distance < 30) {
     inimigo = true;
-  delay (50);
+    return;
+  }
+  inimigo = false;
 }
 
 void procuraLinha () {
