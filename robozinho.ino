@@ -1,12 +1,12 @@
 /* LIGHTNING LITTLE MARK VERSÃO 0.0.1
    AUTOR: LUCAS DE SOUSA PACHECO <LUCASSIDPACHECO@GMAIL.COM>
-   MODIFICADO EM: 04/07/2017
+   MODIFICADO EM: 02/07/2017
 */
 
-#define slinha1 3 // pino analógico
-#define slinha2 4 //pino analógico
-#define hcTrigg 7 // trigger do sensor ultrassônico
-#define hcEcho 8 // echo do sensor ultrassônico
+/*-- PINOS DOS SENSORES --*/
+#define slinha 3 // pino analógico
+#define hcTrigg 7 // digital - trigger do sensor ultrassônico
+#define hcEcho 8 // digital - echo do sensor ultrassônico
 
 /*-- PINOS PWM PARA CONTROLE DO MOTORES --*/
 #define m1Pin1 5 // In 1 do primeiro motor
@@ -20,16 +20,12 @@ int hcTime = 100; //milissegundos
 
 /*-- VARIÁVEIS DE CONTROLE --*/
 bool inimigo = 0;
-bool linhaFrente = 0;
-bool linhaTras = 0;
+bool linha = 0;
 int linhaCalibre = 0;
-int val1 = 0;
-int val2 = 0;
+int val = 0;
 // CONTROLE DO TEMPO
 unsigned long lastSLinha = 0;
-unsigned long currentLinha = 0;
 unsigned long lastHC = 0;
-unsigned long currentHC = 0;
 long duration, distance;
 
 /*-- FUNÇÕES DE STATUS --*/
@@ -41,11 +37,9 @@ void procuraInimigos () {
   delayMicroseconds(10);
   digitalWrite(hcTrigg, LOW);
   duration = pulseIn(hcEcho, HIGH);
+  distance = (duration / 2) / 29.1;//converte a distância para cm
 
-  //converte a distância para cm
-  distance = (duration / 2) / 29.1;
-
-  if (distance < 30) {
+  if (distance < 30){
     inimigo = true;
     return;
   }
@@ -53,19 +47,13 @@ void procuraInimigos () {
 }
 
 void procuraLinha () {
-  val1 = analogRead (slinha1);
-  val2 = analogRead (slinha2);
+  val = analogRead (slinha);
 
-  if (val1 - linhaCalibre > 10) { //determinhar treshold ainda
-    linhaFrente = 1;
+  if (val - linhaCalibre > 50) { //determinhar treshold ainda
+    linha = 1;
     return;
   }
-  if (val2 - linhaCalibre > 10) { //determinhar treshold ainda
-    linhaTras = 1;
-    return;
-  }
-  linhaFrente = 0;
-  linhaTras = 0;
+  linha = 0;
 }
 
 /*--- FUNÇÕES DE MOVIMENTO ---*/
@@ -99,6 +87,13 @@ void gira (bool sentido) {
   digitalWrite (m2Pin1, LOW);
 }
 
+void desliga (){
+  digitalWrite(m1Pin1, LOW);
+  digitalWrite(m1Pin2, LOW);
+  digitalWrite(m2Pin1, LOW);
+  digitalWrite(m2Pin2, LOW);
+}
+
 /*--- FUNÇÕES DO ARDUINO ---*/
 void setup () {
   //inicialização dos pinos
@@ -109,31 +104,22 @@ void setup () {
   pinMode (m2Pin1, OUTPUT);
   pinMode (m2Pin2, OUTPUT);
 
-  linhaCalibre = analogRead (slinha1);
+  linhaCalibre = analogRead (slinha);
   //espera inicial
-  delay (5000);
+  //retirado para debugar
+  //delay (5000);
 }
 
 void loop () {
-  currentLinha = millis ();
-  if (currentLinha - lastSLinha >= slTime) {
+  if (millis() - lastSLinha >= slTime)
     procuraLinha ();
-    lastSLinha = currentLinha;
-  }
 
-  currentHC = millis ();
-  if (currentHC - lastHC >= hcTime) {
+  if (millis() - lastHC >= hcTime)
     procuraInimigos ();
-    lastHC = currentHC;
-  }
 
-  if (inimigo)
-    andaFrente (255);
-  else if (linhaFrente)
-    andaTras (255);
-  else if (linhaTras)
-    andaFrente(255);
+  if (linha || inimigo)
+    andaFrente (100);
   else
-    gira (true);
+    desliga();
 }
 
