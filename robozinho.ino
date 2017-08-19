@@ -1,3 +1,4 @@
+
 /* LIGHTNING LITTLE MARK VERSÃO 0.0.1
    AUTOR: LUCAS DE SOUSA PACHECO <LUCASSIDPACHECO@GMAIL.COM>
    MODIFICADO EM: 02/07/2017
@@ -11,8 +12,8 @@
 /*-- PINOS PWM PARA CONTROLE DO MOTORES --*/
 #define m1Pin1 5 // In 1 do primeiro motor
 #define m1Pin2 6 // In 2 do primeiro motor
-#define m2Pin1 9 //Ind 1 segundo motor
-#define m2Pin2 10 //Ind 2 segundo motor
+#define m2Pin1 10 //Ind 1 segundo motor
+#define m2Pin2 9 //Ind 2 segundo motor
 
 /*-- INTERVALO DE CHAMADA DAS FUNÇÕES --*/
 int slTime = 50; //milissegundos
@@ -105,6 +106,8 @@ void setup () {
   pinMode (m2Pin2, OUTPUT);
 
   linhaCalibre = analogRead (slinha);
+
+  Serial.begin(9600);
   //espera inicial
   //retirado para debugar
   //delay (5000);
@@ -117,9 +120,12 @@ void loop () {
   if (millis() - lastHC >= hcTime)
     procuraInimigos ();
 
-  if (linha || inimigo)
-    andaFrente (100);
+  if (linha){
+    andaTras(100);
+    return;
+  }
+  if(inimigo)
+    andaFrente(100);
   else
     desliga();
 }
-
