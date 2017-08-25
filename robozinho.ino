@@ -1,4 +1,3 @@
-
 /* LIGHTNING LITTLE MARK VERSÃO 0.0.1
    AUTOR: LUCAS DE SOUSA PACHECO <LUCASSIDPACHECO@GMAIL.COM>
    MODIFICADO EM: 02/07/2017
@@ -58,34 +57,25 @@ void procuraLinha () {
 }
 
 /*--- FUNÇÕES DE MOVIMENTO ---*/
-void andaFrente (int pwd) {
+void andaTras (int pwd) {
   analogWrite (m1Pin1, pwd);
   digitalWrite(m1Pin2, LOW);
   analogWrite (m2Pin1, pwd);
   digitalWrite (m2Pin2, LOW);
 }
 
-void andaTras (int pwd) {
+void andaFrente (int pwd) {
   analogWrite (m1Pin2, pwd);
   digitalWrite(m1Pin1, LOW);
   analogWrite (m2Pin2, pwd);
   digitalWrite (m2Pin1, LOW);
 }
 
-void gira (bool sentido) {
-  //0 - horário
-  //1 - anti-horário
-  if (sentido) {
-    analogWrite (m1Pin2, 100);//valor a ajustar
-    digitalWrite(m1Pin1, LOW);
-    analogWrite (m2Pin1, 100);//valor a ajustar
-    digitalWrite (m2Pin2, LOW);
-    return;
-  }
+void gira () {
   analogWrite (m1Pin1, 100);//valor a ajustar
   digitalWrite(m1Pin2, LOW);
-  analogWrite (m2Pin2, 100);//valor a ajustar
   digitalWrite (m2Pin1, LOW);
+  analogWrite (m2Pin2, 255);//valor a ajustar
 }
 
 void desliga (){
@@ -119,13 +109,20 @@ void loop () {
 
   if (millis() - lastHC >= hcTime)
     procuraInimigos ();
-
-  if (linha){
+    
+  if (inimigo && linha)
+    andaFrente(255);
+  else if (linha){
     andaTras(100);
-    return;
+    delay(400);
   }
-  if(inimigo)
+  else if(inimigo){
+    andaFrente(255);
+  }
+  // a procura de inimigos ainda tá meio bugada
+  else{
+    gira();
+    delay(200);
     andaFrente(100);
-  else
-    desliga();
+  }
 }
