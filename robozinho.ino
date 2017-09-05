@@ -1,6 +1,6 @@
-/* LIGHTNING LITTLE MARK VERSÃO 0.0.1
+/* LIGHTNING LITTLE MARK VERSÃO 0.1
    AUTOR: LUCAS DE SOUSA PACHECO <LUCASSIDPACHECO@GMAIL.COM>
-   MODIFICADO EM: 02/07/2017
+   MODIFICADO EM: 05/09/2017
 */
 
 /*-- PINOS DOS SENSORES --*/
@@ -76,10 +76,10 @@ void andaTras (int pwd) {
 }
 
 void gira (bool sentido) {
-  //0 - horário
-  //1 - anti-horário
+  //0 - anti-horário
+  //1 - horário
   if (sentido) {
-    analogWrite (m1Pin2, 100);//valor a ajustar
+    analogWrite (m1Pin2, 255);//valor a ajustar
     digitalWrite(m1Pin1, LOW);
     analogWrite (m2Pin1, LOW);//valor a ajustar
     digitalWrite (m2Pin2, LOW);
@@ -87,7 +87,7 @@ void gira (bool sentido) {
   }
   analogWrite (m1Pin1, LOW);//valor a ajustar
   digitalWrite(m1Pin2, LOW);
-  analogWrite (m2Pin2, 100);//valor a ajustar
+  analogWrite (m2Pin2, 255);//valor a ajustar
   digitalWrite (m2Pin1, LOW);
 }
 
@@ -127,13 +127,15 @@ void loop () {
   /* decisão de movimento */
   if (inimigo && linha)
     andaTras(100);
+    
   else if  (inimigo) 
     andaFrente (255);
+    
   else if (linha) {
-    andaTras(100);
-    delay(1000);
-    /*andaFrente(255);
-    delay(300);*/
+    gira(1);
+    delay(500);
+    andaFrente(255);
+    delay(2000);
   }
   else
     if(searchBool){
